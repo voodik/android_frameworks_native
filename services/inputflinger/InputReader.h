@@ -37,6 +37,8 @@
 #include <stddef.h>
 #include <unistd.h>
 #include <vector>
+//codewalker
+#include <cutils/properties.h>
 
 namespace android {
 
@@ -357,6 +359,9 @@ public:
     uint32_t getButtonState() const;
 
 private:
+    //codewalker
+	char mMouseFirstButtonValue[PROPERTY_VALUE_MAX];
+	char mMouseRightButtonValue[PROPERTY_VALUE_MAX];
     bool mBtnLeft;
     bool mBtnRight;
     bool mBtnMiddle;

@@ -1289,6 +1289,9 @@ std::optional<int32_t> InputDevice::getAssociatedDisplay() {
 
 CursorButtonAccumulator::CursorButtonAccumulator() {
     clearButtons();
+    //codewalker
+    property_get("mouse.firstbutton", mMouseFirstButtonValue, "right");
+	property_get("mouse.right.click", mMouseRightButtonValue, NULL);
 }
 
 void CursorButtonAccumulator::reset(InputDevice* device) {
@@ -1317,10 +1320,27 @@ void CursorButtonAccumulator::process(const RawEvent* rawEvent) {
     if (rawEvent->type == EV_KEY) {
         switch (rawEvent->code) {
         case BTN_LEFT:
+        {
+            if (strcmp(mMouseFirstButtonValue, "right") == 0)
             mBtnLeft = rawEvent->value;
+            else {
+                if (strcmp(mMouseRightButtonValue, "back") == 0)
+                    mBtnBack = rawEvent->value;
+                else
+                    mBtnRight = rawEvent->value;
+            }
+        }
             break;
         case BTN_RIGHT:
-            mBtnRight = rawEvent->value;
+        {
+            if (strcmp(mMouseFirstButtonValue, "right") == 0) {
+                if (strcmp(mMouseRightButtonValue, "back") == 0)
+                    mBtnBack = rawEvent->value;
+                else
+                    mBtnRight = rawEvent->value;
+            } else
+                mBtnLeft = rawEvent->value;
+        }
             break;
         case BTN_MIDDLE:
             mBtnMiddle = rawEvent->value;
