@@ -162,13 +162,8 @@ Layer::~Layer() {
 void Layer::onLayerDisplayed(const sp<Fence>& /*releaseFence*/) {}
 
 void Layer::onRemovedFromCurrentState() {
-    if (!mPendingRemoval) {
-        // the layer is removed from SF mCurrentState to mLayersPendingRemoval
-        mPendingRemoval = true;
-
-        // remove from sf mapping
-        mFlinger->removeLayerFromMap(this);
-    }
+    // the layer is removed from SF mCurrentState to mLayersPendingRemoval
+    mPendingRemoval = true;
 
     if (mCurrentState.zOrderRelativeOf != nullptr) {
         sp<Layer> strongRelative = mCurrentState.zOrderRelativeOf.promote();
@@ -1405,7 +1400,7 @@ LayerDebugInfo Layer::getLayerDebugInfo() const {
     LayerDebugInfo info;
     const Layer::State& ds = getDrawingState();
     info.mName = getName();
-    sp<Layer> parent = getParent();
+    sp<Layer> parent = mDrawingParent.promote();
     info.mParentName = (parent == nullptr ? std::string("none") : parent->getName().string());
     info.mType = String8(getTypeId());
     info.mTransparentRegion = ds.activeTransparentRegion;
